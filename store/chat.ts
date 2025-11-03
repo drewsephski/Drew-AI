@@ -15,6 +15,7 @@ type ChatStore = {
 		model: string,
 	) => void;
 	updateLastMessage: (content: string) => void;
+	updateMessage: (id: string, content: string) => void;
 	isStreaming: boolean;
 	setIsStreaming: (streaming: boolean) => void;
 	mode: ChatMode;
@@ -29,6 +30,10 @@ type ChatStore = {
 	setVoiceRate: (rate: number) => void;
 	voicePitch: number;
 	setVoicePitch: (pitch: number) => void;
+	retryMessage: (
+		messageId: string,
+		abortController: AbortController,
+	) => Promise<void>;
 };
 
 export const useChatStore = create<ChatStore>((set) => ({
@@ -60,11 +65,78 @@ export const useChatStore = create<ChatStore>((set) => ({
 
 			return { ...state, messages: updatedMessages };
 		}),
+	updateMessage: (id, content) =>
+		set((state) => {
+			const updatedMessages = state.messages.map((message) =>
+				message.id === id ? { ...message, content } : message,
+			);
+			return { ...state, messages: updatedMessages };
+		}),
+	retryMessage: async (messageId, abortController) => {
+		// First, get the current state
+		const state = useChatStore.getState();
+		const messageIndex = state.messages.findIndex((m) => m.id === messageId);
+
+		if (messageIndex === -1) return;
+
+		const message = state.messages[messageIndex];
+		const previousMessage = state.messages[messageIndex - 1];
+
+		if (!previousMessage || previousMessage.role !== "user") return;
+
+		// Get all messages up to and including the user message that preceded this assistant message
+		const messagesUpToUser = state.messages.slice(0, messageIndex);
+
+		try {
+			const response = await fetch("/api/chat", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					message: previousMessage.content,
+					mode: state.mode,
+					model: state.model,
+					messages: messagesUpToUser,
+				}),
+				signal: abortController.signal,
+			});
+
+			if (!response.ok) {
+				const errData = await response.json();
+				throw new Error(errData?.error || `HTTP Error: ${response.status}`);
+			}
+
+			const reader = response.body?.getReader();
+			const decoder = new TextDecoder();
+			let accumulatedText = "";
+
+			try {
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) break;
+
+					const chunk = decoder.decode(value, { stream: true });
+					accumulatedText += chunk;
+					useChatStore.getState().updateMessage(messageId, accumulatedText);
+				}
+			} catch (error) {
+				console.error("Streaming error:", error);
+			}
+		} catch (error) {
+			if (error instanceof Error && error.name === "AbortError") return;
+			console.error("Retry Error:", error);
+			useChatStore
+				.getState()
+				.updateMessage(
+					messageId,
+					`Sorry, something went wrong!\n\n\`\`\`bash\n${error}\n\`\`\`\n`,
+				);
+		}
+	},
 	isStreaming: false,
 	setIsStreaming: (streaming) => set({ isStreaming: streaming }),
 	mode: "chat", // Default mode is chat
 	setMode: (mode) => set({ mode: mode }),
-	model: "mistralai/mistral-7b-instruct:free", // Default model
+	model: "minimax/minimax-m2:free", // Default model
 	setModel: (model) => set({ model: model }),
 	isReading: false,
 	stopReading: () => {

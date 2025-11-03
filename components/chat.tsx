@@ -10,7 +10,7 @@ import {
 import { Suggestions, Suggestion } from "@/components/ui/suggestions";
 import { cn } from "@/lib/utils";
 import { useChatStore } from "@/store/chat";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { stripMarkdown } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -31,9 +31,20 @@ type ChatProps = {
 };
 
 export function Chat({ onSuggestionClick }: ChatProps) {
-	const { messages, isReading, stopReading, voice, voiceRate, voicePitch } =
-		useChatStore();
+	const {
+		messages,
+		isReading,
+		stopReading,
+		voice,
+		voiceRate,
+		voicePitch,
+		isStreaming,
+		setIsStreaming,
+		model,
+		retryMessage,
+	} = useChatStore();
 	const speakingRef = useRef<SpeechSynthesisUtterance | null>(null);
+	const retryAbortController = useRef<AbortController | null>(null);
 
 	const handleCopy = (content: string) => {
 		navigator.clipboard.writeText(content);
@@ -65,6 +76,30 @@ export function Chat({ onSuggestionClick }: ChatProps) {
 		useChatStore.setState({ isReading: true });
 		window.speechSynthesis.speak(utterance);
 	};
+
+	const handleRetry = (messageId: string) => {
+		if (isStreaming) return;
+
+		// Abort any existing retry
+		retryAbortController.current?.abort();
+		retryAbortController.current = new AbortController();
+
+		// Set streaming state
+		setIsStreaming(true);
+
+		// Call the retry function
+		retryMessage(messageId, retryAbortController.current).finally(() => {
+			setIsStreaming(false);
+			retryAbortController.current = null;
+		});
+	};
+
+	// Cleanup abort controller on unmount
+	useEffect(() => {
+		return () => {
+			retryAbortController.current?.abort();
+		};
+	}, []);
 
 	return (
 		<ChatContainer className="flex flex-col gap-3 scrollbar-hidden !text-[#435346] !pb-[120px] pt-6 px-2 bricolage-alpina w-full z-10">
@@ -140,6 +175,17 @@ export function Chat({ onSuggestionClick }: ChatProps) {
 									<div className="i-solar:copy-linear cursor-pointer dark:!text-white/70 hover:opacity-80 opacity-100  text-[22px]" />
 								</button>
 							</MessageAction>
+
+							<MessageAction tooltip="Retry">
+								<button
+									onClick={() => handleRetry(message.id)}
+									type="button"
+									disabled={isStreaming}
+								>
+									<div className="i-solar:refresh-linear cursor-pointer dark:!text-white/70 hover:opacity-80 opacity-100 text-[22px]" />
+								</button>
+							</MessageAction>
+
 							<MessageAction
 								tooltip={isReading ? "Stop reading" : "Read aloud"}
 							>
