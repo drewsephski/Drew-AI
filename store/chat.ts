@@ -136,7 +136,7 @@ export const useChatStore = create<ChatStore>((set) => ({
 	setIsStreaming: (streaming) => set({ isStreaming: streaming }),
 	mode: "chat", // Default mode is chat
 	setMode: (mode) => set({ mode: mode }),
-	model: "minimax/minimax-m2:free", // Default model
+	model: "openai/gpt-oss-20b:free", // Default model
 	setModel: (model) => set({ model: model }),
 	isReading: false,
 	stopReading: () => {
