@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { codeToHtml } from "shiki";
+import { toast } from "sonner";
 
 export type CodeBlockProps = {
 	children?: React.ReactNode;
@@ -140,6 +141,9 @@ function CodeBlockCode({
 
 	const handleCopy = async () => {
 		await navigator.clipboard.writeText(code);
+		toast.success("Code copied to clipboard!", {
+			description: `${language} code has been copied to your clipboard.`,
+		});
 	};
 
 	const extension = languageExtensions[language.toLowerCase()] || language;
@@ -154,6 +158,9 @@ function CodeBlockCode({
 		a.click();
 		window.URL.revokeObjectURL(url);
 		document.body.removeChild(a);
+		toast.success("Code downloaded!", {
+			description: `${language} code has been saved to your downloads.`,
+		});
 	};
 
 	useEffect(() => {

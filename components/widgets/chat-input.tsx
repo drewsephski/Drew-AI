@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { getModelIcon } from "@/lib/provider-icons";
 import { useTheme } from "next-themes";
+import { toast } from "sonner";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -72,7 +73,7 @@ export function ChatInput() {
 					console.warn("Invalid models data structure:", data);
 					setModelOptions([
 						{
-							name: "Talaash",
+							name: "Drew",
 							slug: "mistralai/mistral-7b-instruct:free",
 						},
 					]);
@@ -82,7 +83,7 @@ export function ChatInput() {
 
 				setModelOptions([
 					{
-						name: "Talaash",
+						name: "Drew",
 						slug: "mistralai/mistral-7b-instruct:free",
 					},
 				]);
@@ -93,6 +94,27 @@ export function ChatInput() {
 	}, []);
 
 	useEffect(() => {
+		const handleSuggestionClick = (event: CustomEvent<string>) => {
+			const suggestionText = event.detail;
+			setInput(suggestionText);
+			// Optionally submit immediately, or just focus the input
+			// For now, let's just set the input and the user can edit or submit
+		};
+
+		window.addEventListener(
+			"suggestion-click",
+			handleSuggestionClick as EventListener,
+		);
+
+		return () => {
+			window.removeEventListener(
+				"suggestion-click",
+				handleSuggestionClick as EventListener,
+			);
+		};
+	}, []);
+
+	useEffect(() => {
 		return () => {
 			abortController.current?.abort();
 		};
@@ -100,7 +122,7 @@ export function ChatInput() {
 
 	function getModelNameBySlug(slug: string): string {
 		const found = modelOptions.find((m) => m.slug === slug);
-		return found ? found.name.replace(/\s*\(.*\)$/, "") : "Talaash"; // fallback to slug if name not found
+		return found ? found.name.replace(/\s*\(.*\)$/, "") : "Drew"; // fallback to slug if name not found
 	}
 
 	const handleSubmit = async () => {
@@ -192,6 +214,9 @@ ${error}
 
 	const handleNewChat = () => {
 		useChatStore.setState({ messages: [] });
+		toast.success("New chat started!", {
+			description: "Your chat history has been cleared.",
+		});
 	};
 
 	return (
@@ -333,7 +358,7 @@ ${error}
 							</AlertDialogTrigger>
 							<AlertDialogContent className="bg-white/80 backdrop-blur-2xl dark:!bg-emerald-900/50 border border-[#899c8d] rounded-3xl shadow-none dark:border-white/10">
 								<AlertDialogHeader>
-									<AlertDialogTitle className="text-[#435346] fraunces text-2xl dark:text-white/85">
+									<AlertDialogTitle className="text-[#435346] bricolage-serif text-2xl dark:text-white/85">
 										New conversation?
 									</AlertDialogTitle>
 									<AlertDialogDescription className="text-[#435346] text-base dark:text-white/70">

@@ -7,10 +7,12 @@ import {
 	MessageActions,
 	MessageAction,
 } from "@/components/ui/message";
+import { Suggestions, Suggestion } from "@/components/ui/suggestions";
 import { cn } from "@/lib/utils";
 import { useChatStore } from "@/store/chat";
 import { useRef } from "react";
 import { stripMarkdown } from "@/lib/utils";
+import { toast } from "sonner";
 
 import {
 	AlertDialog,
@@ -24,13 +26,20 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export function Chat() {
+type ChatProps = {
+	onSuggestionClick?: (text: string) => void;
+};
+
+export function Chat({ onSuggestionClick }: ChatProps) {
 	const { messages, isReading, stopReading, voice, voiceRate, voicePitch } =
 		useChatStore();
 	const speakingRef = useRef<SpeechSynthesisUtterance | null>(null);
 
 	const handleCopy = (content: string) => {
 		navigator.clipboard.writeText(content);
+		toast.success("Message copied to clipboard!", {
+			description: "The content has been copied to your clipboard.",
+		});
 	};
 
 	const handleRead = (content: string) => {
@@ -58,12 +67,39 @@ export function Chat() {
 	};
 
 	return (
-		<ChatContainer className="flex flex-col gap-3 scrollbar-hidden !text-[#435346] !pb-[120px] pt-6 px-2 alpina w-full z-10">
+		<ChatContainer className="flex flex-col gap-3 scrollbar-hidden !text-[#435346] !pb-[120px] pt-6 px-2 bricolage-alpina w-full z-10">
 			{messages.length === 0 && (
-				<div className="flex flex-col gap-3 w-full h-[200px] items-center justify-center">
-					<p className="text-center text-3xl !text-[#5e7e5f] dark:!text-white/80 fraunces">
-						Your friendly AI!
+				<div className="flex flex-col gap-6 w-full items-center justify-center py-8">
+					<p className="text-center text-3xl !text-[#5e7e5f] dark:!text-white/80 bricolage-serif">
+						Your sarcastic AI
 					</p>
+					<div className="w-full max-w-2xl px-4">
+						<p className="text-center text-sm !text-[#435346] dark:!text-white/70 mb-4 bricolage-grotesque">
+							Try asking me:
+						</p>
+						<Suggestions>
+							<Suggestion
+								suggestion="Tell me a joke"
+								onClick={(text) => onSuggestionClick?.(text)}
+							/>
+							<Suggestion
+								suggestion="Explain what you do"
+								onClick={(text) => onSuggestionClick?.(text)}
+							/>
+							<Suggestion
+								suggestion="Write a Python function"
+								onClick={(text) => onSuggestionClick?.(text)}
+							/>
+							<Suggestion
+								suggestion="What's a fun fact about Drew?"
+								onClick={(text) => onSuggestionClick?.(text)}
+							/>
+							<Suggestion
+								suggestion="What can you help with?"
+								onClick={(text) => onSuggestionClick?.(text)}
+							/>
+						</Suggestions>
+					</div>
 				</div>
 			)}
 
@@ -90,7 +126,7 @@ export function Chat() {
 							<MessageAction tooltip="Model">
 								<div
 									className="bg-[#e5f0df] p-0.5 rounded-full drop-shadow-xs px-2 border-[#899c8d] border text-[#435346] dark:!bg-emerald-900/50 dark:border-white/10 dark:text-white/85"
-									style={{ fontFamily: "Geist" }}
+									style={{ fontFamily: "Bricolage Grotesque" }}
 								>
 									{message.model}
 								</div>

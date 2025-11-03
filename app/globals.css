@@ -1,8 +1,4 @@
-@import url("https://fonts.cdnfonts.com/css/gt-alpina-trial");
-
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,100,1;1,9..144,100..900,100,1&display=swap");
-
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap");
 
 @import "tailwindcss";
 
@@ -10,33 +6,43 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Bricolage Grotesque utility classes */
+.font-bricolage {
+	font-family: "Bricolage Grotesque", sans-serif;
+}
+
+.font-bricolage-serif {
+	font-family: "Bricolage Grotesque", serif;
+}
+
+.font-bricolage-mono {
+	font-family: "Bricolage Grotesque", monospace;
+}
+
 @plugin "tailwindcss-animate";
 
 @plugin "@tailwindcss/typography";
 
-.geist {
-	font-family: "Geist", sans-serif;
+.bricolage {
+	font-family: "Bricolage Grotesque", sans-serif;
 	font-optical-sizing: auto;
 	font-style: normal;
 }
 
-.fraunces {
-	font-family: "Fraunces", serif;
+.bricolage-serif {
+	font-family: "Bricolage Grotesque", serif;
 	font-optical-sizing: auto;
 	font-weight: 500;
 	font-style: italic;
-	font-variation-settings:
-		"SOFT" 100,
-		"WONK" 1;
 	color: #435346 !important;
 }
 
-.dark .fraunces {
+.dark .bricolage-serif {
 	color: white !important;
 }
 
 code {
-	font-family: "Geist Mono", monospace !important;
+	font-family: "Bricolage Grotesque", monospace !important;
 	font-optical-sizing: auto;
 	font-style: normal;
 	line-height: 1.8rem !important;
@@ -57,9 +63,9 @@ code {
 	font-weight: 350;
 }
 
-.alpina {
+.bricolage-alpina {
 	font-family:
-		"GT Alpina Trial", ui-serif, Georgia, Cambria, "Times New Roman", Times,
+		"Bricolage Grotesque", ui-serif, Georgia, Cambria, "Times New Roman", Times,
 		serif;
 }
 
@@ -75,13 +81,13 @@ code {
 
 .nodeLabel {
 	@apply relative -top-1.5;
-	font-family: "GT Alpina Trial", sans-serif;
+	font-family: "Bricolage Grotesque", sans-serif;
 	font-size: 26px;
 }
 
 .t-heading-s {
 	font-family:
-		"GT Alpina Trial", ui-serif, Georgia, Cambria, "Times New Roman", Times,
+		"Bricolage Grotesque", ui-serif, Georgia, Cambria, "Times New Roman", Times,
 		serif;
 	font-size: 1.25rem !important;
 	letter-spacing: -0.19px;
@@ -148,7 +154,7 @@ body {
 
 body {
 	box-sizing: border-box;
-	font-family: "Geist", sans-serif;
+	font-family: "Bricolage Grotesque", sans-serif;
 }
 
 a {
@@ -184,7 +190,7 @@ foreignObject {
 }
 
 .font-mono {
-	font-family: "Geist Mono", monospace !important;
+	font-family: "Bricolage Grotesque", monospace !important;
 	font-feature-settings: "mono" 1;
 }
 

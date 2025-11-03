@@ -266,7 +266,7 @@ export async function exportAsPDF(messages: ChatMessage[]) {
 			</style>
 		</head>
 		<body>
-			<h1>Talaash Chat Export - ${getDate()}</h1>
+			<h1>Drew Chat Export - ${getDate()}</h1>
 			${html}
 		</body>
 		</html>

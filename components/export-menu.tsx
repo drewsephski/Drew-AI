@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { exportAsMarkdown, exportAsJSON, exportAsPDF } from "@/lib/export";
+import { toast } from "sonner";
 
 export default function ExportMenu() {
 	const messages = useChatStore((state) => state.messages);
@@ -24,13 +25,34 @@ export default function ExportMenu() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				<DropdownMenuItem onClick={() => exportAsMarkdown(messages)}>
+				<DropdownMenuItem
+					onClick={() => {
+						exportAsMarkdown(messages);
+						toast.success("Export completed!", {
+							description: "Your chat has been exported as Markdown.",
+						});
+					}}
+				>
 					Export as Markdown
 				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => exportAsJSON(messages)}>
+				<DropdownMenuItem
+					onClick={() => {
+						exportAsJSON(messages);
+						toast.success("Export completed!", {
+							description: "Your chat has been exported as JSON.",
+						});
+					}}
+				>
 					Export as JSON
 				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => exportAsPDF(messages)}>
+				<DropdownMenuItem
+					onClick={() => {
+						exportAsPDF(messages);
+						toast.success("PDF export opened!", {
+							description: "Your chat has been prepared for printing.",
+						});
+					}}
+				>
 					Export as PDF
 				</DropdownMenuItem>
 			</DropdownMenuContent>
