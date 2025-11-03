@@ -83,7 +83,7 @@ export function Chat({ onSuggestionClick }: ChatProps) {
 								onClick={(text) => onSuggestionClick?.(text)}
 							/>
 							<Suggestion
-								suggestion="Explain what you do"
+								suggestion="Who are you?"
 								onClick={(text) => onSuggestionClick?.(text)}
 							/>
 							<Suggestion
