@@ -5,7 +5,7 @@ export async function POST(req: Request) {
 	try {
 		const {
 			message,
-			model = "minimax/minimax-m2:free",
+			model = "openai/gpt-oss-20b:free",
 			messages = [],
 		} = await req.json();
 
