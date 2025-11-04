@@ -106,7 +106,7 @@ export function Chat({ onSuggestionClick }: ChatProps) {
 			{messages.length === 0 && (
 				<div className="flex flex-col gap-6 w-full items-center justify-center py-8">
 					<p className="text-center text-3xl !text-[#5e7e5f] dark:!text-white/80 bricolage-serif">
-						Your sarcastic AI
+						Hi, I'm Drew's personal AI twin
 					</p>
 					<div className="w-full max-w-2xl px-4">
 						<p className="text-center text-sm !text-[#435346] dark:!text-white/70 mb-4 bricolage-grotesque">

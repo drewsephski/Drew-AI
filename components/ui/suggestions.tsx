@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import type React from "react";
+import { Button } from "./button";
 
 type SuggestionsProps = {
 	children: React.ReactNode;
@@ -33,7 +34,7 @@ export function Suggestion({
 	className,
 }: SuggestionProps) {
 	return (
-		<button
+		<Button
 			onClick={() => onClick(suggestion)}
 			className={cn(
 				// Base styling to match your chat interface
@@ -52,6 +53,6 @@ export function Suggestion({
 			type="button"
 		>
 			{suggestion}
-		</button>
+		</Button>
 	);
 }
