@@ -121,12 +121,13 @@ export function Chat({ onSuggestionClick }: ChatProps) {
 								suggestion="Who are you?"
 								onClick={(text) => onSuggestionClick?.(text)}
 							/>
+
 							<Suggestion
-								suggestion="Write a Python function"
+								suggestion="What's a fun fact about Drew?"
 								onClick={(text) => onSuggestionClick?.(text)}
 							/>
 							<Suggestion
-								suggestion="What's a fun fact about Drew?"
+								suggestion="Show me a few of Drew's projects"
 								onClick={(text) => onSuggestionClick?.(text)}
 							/>
 							<Suggestion
